@@ -1,6 +1,6 @@
 <template>
   <div class="distribution-container">
-    <h3>车辆类型分布</h3>
+    <h3>时段车辆类型分布</h3>
     <div class="chart-container">
       <div id="typeDistributionChart" style="width: 100%; height: 100%"></div>
     </div>
@@ -8,21 +8,16 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 
 let chart = null
-const vehicleTypes = ['小型车', '中型车', '大型车', '特种车']
-const chartData = ref([
-  { value: 120, name: '小型车' },
-  { value: 80, name: '中型车' },
-  { value: 40, name: '大型车' },
-  { value: 20, name: '特种车' }
-])
 
 onMounted(() => {
   const chartDom = document.getElementById('typeDistributionChart')
   chart = echarts.init(chartDom)
+  
+  const timeSlots = ['0-4时', '4-8时', '8-12时', '12-16时', '16-20时', '20-24时']
   
   const option = {
     tooltip: {
@@ -42,62 +37,68 @@ onMounted(() => {
     },
     xAxis: [{
       type: 'category',
-      data: vehicleTypes,
-      axisLabel: { color: '#fff' }
+      data: timeSlots,
+      axisLabel: { 
+        color: '#fff',
+        rotate: 0
+      }
     }],
     yAxis: [{
       type: 'value',
-      axisLabel: { color: '#fff' }
+      name: '车辆数量',
+      axisLabel: { color: '#fff' },
+      nameTextStyle: { color: '#fff' }
     }],
     series: [
       {
-        name: '数量占比',
-        type: 'pie',
-        radius: ['20%', '30%'],
-        center: ['75%', '30%'],
-        label: {
-          formatter: '{b}: {d}%',
-          color: '#fff'
+        name: '小型车',
+        type: 'bar',
+        emphasis: {
+          focus: 'series'
         },
-        data: chartData.value
+        itemStyle: { color: '#4992ff' },
+        data: [45, 82, 130, 140, 150, 80]
       },
       {
-        name: '车辆数量',
+        name: '中型车',
         type: 'bar',
-        barWidth: '40%',
-        label: {
-          show: true,
-          position: 'top',
-          color: '#fff'
+        emphasis: {
+          focus: 'series'
         },
-        data: chartData.value.map(item => item.value)
+        itemStyle: { color: '#7cffb2' },
+        data: [28, 45, 75, 85, 95, 52]
+      },
+      {
+        name: '大型车',
+        type: 'bar',
+        emphasis: {
+          focus: 'series'
+        },
+        itemStyle: { color: '#fddd60' },
+        data: [15, 25, 45, 55, 65, 35]
+      },
+      {
+        name: '特种车',
+        type: 'bar',
+        emphasis: {
+          focus: 'series'
+        },
+        itemStyle: { color: '#ff6e76' },
+        data: [8, 12, 18, 22, 25, 15]
       }
     ]
   }
 
   chart.setOption(option)
   
-  // 每隔30秒更新数据
-  const timer = setInterval(() => {
-    chartData.value = vehicleTypes.map(type => ({
-      value: Math.floor(Math.random() * 100) + 20,
-      name: type
-    }))
-    chart.setOption({
-      series: [
-        { data: chartData.value },
-        { data: chartData.value.map(item => item.value) }
-      ]
-    })
-  }, 30000)
-
-  return () => clearInterval(timer)
+  // 响应式调整
+  window.addEventListener('resize', () => {
+    chart?.resize()
+  })
 })
 
 onUnmounted(() => {
-  if (chart) {
-    chart.dispose()
-  }
+  chart?.dispose()
 })
 </script>
 

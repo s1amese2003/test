@@ -1,6 +1,6 @@
 <template>
   <div class="time-segment-container">
-    <h3>各时段车辆分布</h3>
+    <h3>时段车辆调度分布</h3>
     <div class="chart-container">
       <div id="timeSegmentChart" style="width: 100%; height: 100%"></div>
     </div>
@@ -28,7 +28,7 @@ onMounted(() => {
       }
     },
     legend: {
-      data: ['小型车', '中型车', '大型车', '特种车'],
+      data: ['安保车辆', '机场巴士'],
       textStyle: {
         color: '#fff'
       }
@@ -43,67 +43,63 @@ onMounted(() => {
       {
         type: 'category',
         boundaryGap: false,
-        data: ['0-4', '4-8', '8-12', '12-16', '16-20', '20-24'],
+        data: ['0-4时', '4-8时', '8-12时', '12-16时', '16-20时', '20-24时'],
         axisLabel: { color: '#fff' }
       }
     ],
     yAxis: [
       {
         type: 'value',
-        axisLabel: { color: '#fff' }
+        name: '车辆数量',
+        axisLabel: { color: '#fff' },
+        nameTextStyle: { color: '#fff' }
       }
     ],
     series: [
       {
-        name: '小型车',
+        name: '安保车辆',
         type: 'line',
-        stack: 'Total',
-        areaStyle: {},
         emphasis: {
           focus: 'series'
         },
-        data: [120, 132, 101, 134, 90, 230]
+        showSymbol: true,
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: '#4992ff'
+        },
+        itemStyle: {
+          color: '#4992ff'
+        },
+        data: [4, 6, 8, 8, 8, 6]
       },
       {
-        name: '中型车',
+        name: '机场巴士',
         type: 'line',
-        stack: 'Total',
-        areaStyle: {},
         emphasis: {
           focus: 'series'
         },
-        data: [220, 182, 191, 234, 290, 330]
-      },
-      {
-        name: '大型车',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
+        showSymbol: true,
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: '#7cffb2'
         },
-        data: [150, 232, 201, 154, 190, 330]
-      },
-      {
-        name: '特种车',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
+        itemStyle: {
+          color: '#7cffb2'
         },
-        data: [320, 332, 301, 334, 390, 330]
+        data: [6, 12, 15, 15, 15, 10]
       }
     ]
   }
 
   chart.setOption(option)
+  
+  window.addEventListener('resize', () => chart?.resize())
 })
 
 onUnmounted(() => {
-  if (chart) {
-    chart.dispose()
-  }
+  chart?.dispose()
 })
 </script>
 

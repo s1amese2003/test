@@ -1,12 +1,37 @@
 <template>
   <el-container>
     <el-header>
-      <el-menu mode="horizontal" router class="custom-menu" default-active="/vehicle">
-        <el-menu-item index="/vehicle">车辆状况</el-menu-item>
-        <el-menu-item index="/monitor">监控中心</el-menu-item>
-        <el-menu-item index="/analysis">数据分析</el-menu-item>
-        <el-menu-item index="/statistics">车辆统计</el-menu-item>
-      </el-menu>
+      <header class="header">
+        <div class="header-title">
+          <h1>机 场 车 辆 监 控 系 统</h1>
+        </div>
+        <div class="nav-buttons-center">
+          <div class="nav-button" 
+               :class="{ active: $route.path === '/monitor' }"
+               @click="$router.push('/monitor')">
+            <span class="button-text">监控中心</span>
+          </div>
+          <div class="nav-button" 
+               :class="{ active: $route.path === '/vehicle' }"
+               @click="$router.push('/vehicle')">
+            <span class="button-text">车辆状况</span>
+          </div>
+          <div class="nav-button" 
+               :class="{ active: $route.path === '/analysis' }"
+               @click="$router.push('/analysis')">
+            <span class="button-text">数据分析</span>
+          </div>
+          <!-- <div class="nav-button" 
+               :class="{ active: $route.path === '/statistics' }"
+               @click="$router.push('/statistics')">
+            <span class="button-text">车辆统计</span>
+          </div> -->
+        </div>
+        <div class="time-weather-info">
+          <div class="time">{{ currentTime }}</div>
+          <div class="date">{{ currentDate }}</div>
+        </div>
+      </header>
     </el-header>
     <el-main>
       <router-view></router-view>
@@ -15,19 +40,65 @@
 </template>
 
 <script setup>
+import { useRouter, useRoute } from 'vue-router';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const router = useRouter();
+const route = useRoute();
+
+// 时间和日期
+const currentTime = ref('00:00:00');
+const currentDate = ref('');
+let timer = null;
+
+// 更新时间函数
+const updateTime = () => {
+  const now = new Date();
+  
+  // 格式化时间 HH:MM:SS
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  currentTime.value = `${hours}:${minutes}:${seconds}`;
+  
+  // 格式化日期 YYYY年MM月DD日 星期X
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const weekday = weekdays[now.getDay()];
+  currentDate.value = `${year}年${month}月${day}日 星期${weekday}`;
+};
+
+// 模拟天气数据
+const temperature = ref('25-30℃');
+const weatherCondition = ref('多云');
+
+// 组件挂载时启动定时器
+onMounted(() => {
+  updateTime(); // 立即执行一次
+  timer = setInterval(updateTime, 1000); // 每秒更新一次
+});
+
+// 组件卸载前清除定时器
+onBeforeUnmount(() => {
+  if (timer) {
+    clearInterval(timer);
+  }
+});
 </script>
 
 <style scoped>
 .el-container {
   height: 100vh;
   overflow: hidden;
+  background: url('/src/statics/048.jpg');
+  background-size: cover;
 }
 
 .el-header {
   padding: 0;
   height: 50px;
-  border-bottom: 1px solid #dcdfe6;
-  line-height: 50px;
 }
 
 .el-main {
@@ -36,69 +107,92 @@
   overflow: hidden;
 }
 
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
-  padding: 10px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  height: 100vh;
-  background: #1a1a1a;
-  color: #fff;
-  box-sizing: border-box;
+  height: 100%;
+  background: url('/src/statics/head.png');
+  background-size: 100% 300%;
+  background-repeat: no-repeat;
+  padding: 0 50px;
+}
+
+.header-title {
+  color: white;
+  margin-right: 160px; /* 减小右边距，使导航按钮整体向左移动 */
+}
+
+.header-title h1 {
+  font-size: 20px;
   margin: 0;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
-.panel {
-  background: #2a2a2a;
-  border-radius: 8px;
-  padding: 15px;
-  overflow: hidden;
+.nav-buttons-center {
+  display: flex;
+  gap: 20px;
+  margin: 0; /* 移除自动边距 */
+  margin-right: auto; /* 添加右侧自动边距，使按钮组靠左 */
+  justify-content: flex-start; /* 改为左对齐 */
 }
 
-h2 {
-  margin-bottom: 15px;
-  font-size: 1.2em;
-  color: #409EFF;
+.nav-button {
+  min-width: 100px;
+  height: 40px;
+  color: whitesmoke;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  background: rgba(0, 0, 0, 0);
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 149, 255, 0.2);
 }
 
-.panel {
+.nav-button.active {
+  background: rgba(0, 149, 255, 0.64);
+  box-shadow: 0 0 30px rgba(0, 149, 255, 0.627);
+}
+
+.nav-button:hover {
+  transform: scale(1.05);
+  background: rgba(0, 149, 255, 0.2);
+}
+
+.button-text {
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.time-weather-info {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  color: #00ffcc;
+  font-family: 'Digital', sans-serif;
+  margin-left: auto;
 }
 
-h2 {
-  margin: 0 0 10px 0;
-}
-
-.custom-menu {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start; /* 改为左对齐 */
-  background: #0f1325;
-  border: none;
-  padding-left: 20px; /* 添加左侧内边距 */
-}
-
-:deep(.el-menu--horizontal .el-menu-item) {
-  color: #fff;
-  height: 50px;
-  line-height: 50px;
-  padding: 0 20px; /* 减小内边距 */
+.time {
   font-size: 16px;
-  background-color: transparent;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
 }
 
-:deep(.el-menu--horizontal .el-menu-item:hover),
-:deep(.el-menu--horizontal .el-menu-item.is-active) {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: #409EFF;
-  border-bottom: 2px solid #409EFF;
-}
-
-:deep(.el-menu--horizontal) {
-  border-bottom: none;
-  background-color: transparent;
+.date {
+  font-size: 12px;
+  color: #ffffff;
+  margin-top: 2px;
 }
 </style>
+
+

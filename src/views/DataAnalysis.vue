@@ -1,37 +1,47 @@
 <template>
   <div class="analysis-container">
-    <el-row class="analysis-content" :gutter="10">
-      <el-col :span="6">
-        <div class="panel vehicle-ratio">
-          <dv-border-box-1>
+    <el-row class="analysis-content">
+      <!-- 左侧区域 -->
+      <el-col :span="7">
+        <div class="panel">
+          <dv-border-box-10>
             <VehicleRatio />
-          </dv-border-box-1>
+          </dv-border-box-10>
         </div>
-        <div class="panel vehicle-type">
-          <dv-border-box-1>
+        <div class="panel">
+          <dv-border-box-10>
             <VehicleTypeDistribution />
-          </dv-border-box-1>
+          </dv-border-box-10>
         </div>
       </el-col>
 
-      <el-col :span="12">
+      <!-- 中间区域 -->
+      <el-col :span="10" class="center-column">
         <div class="panel center-panel">
-          <dv-border-box-1>
+          <dv-border-box-10>
             <div class="center-content">
-              <h3>待定区域</h3>
-              <div class="placeholder-content">
-                <el-empty description="待添加内容"></el-empty>
-              </div>
+              <VehicleTypePie />
             </div>
-          </dv-border-box-1>
+          </dv-border-box-10>
+        </div>
+        <div class="panel">
+          <dv-border-box-10>
+            <TimeSegmentAnalysis />
+          </dv-border-box-10>
         </div>
       </el-col>
 
-      <el-col :span="6">
-        <div class="panel time-analysis">
-          <dv-border-box-1>
-            <TimeSegmentAnalysis />
-          </dv-border-box-1>
+      <!-- 右侧区域 -->
+      <el-col :span="7">
+        <div class="panel">
+          <dv-border-box-10>
+            <Approvals />
+          </dv-border-box-10>
+        </div>
+        <div class="panel">
+          <dv-border-box-10>
+            <InspectionStatus />
+          </dv-border-box-10>
         </div>
       </el-col>
     </el-row>
@@ -41,14 +51,17 @@
 <script setup>
 import VehicleRatio from '../components/analysis/VehicleRatio.vue'
 import VehicleTypeDistribution from '../components/analysis/VehicleTypeDistribution.vue'
+import VehicleTypePie from '../components/analysis/VehicleTypePie.vue'
 import TimeSegmentAnalysis from '../components/analysis/TimeSegmentAnalysis.vue'
+import Approvals from '../components/analysis/Approvals.vue'
+import InspectionStatus from '../components/analysis/InspectionStatus.vue'
 </script>
 
 <style scoped>
 .analysis-container {
   width: 100%;
   height: 100%;
-  background: #0f1325;
+  background: #0f132500;
   padding: 10px;
   box-sizing: border-box;
   overflow: hidden;
@@ -56,31 +69,71 @@ import TimeSegmentAnalysis from '../components/analysis/TimeSegmentAnalysis.vue'
 
 .analysis-content {
   height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .el-col {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+.el-col:first-child .panel:first-child {
+  flex: 1;
+  height: auto;
+}
+
+.el-col:first-child .panel:last-child {
+  flex: 1;
+  height: auto;
+}
+
+.el-col:nth-child(3) .panel {
+  flex: 1;
+  height: auto;
 }
 
 .panel {
-  background: rgba(6, 30, 93, 0.5);
+  flex: 1;
+  background: rgba(6, 30, 93, 0);
   border-radius: 4px;
+  padding: 5px;
   overflow: hidden;
+  transition: all 0.3s ease; /* 添加过渡效果 */
+  position: relative; /* 为伪元素定位做准备 */
 }
 
-.vehicle-ratio, .vehicle-type {
-  height: calc(50% - 5px);
+/* 修改悬停效果为放大 */
+.panel:hover {
+  transform: scale(1.02); /* 放大效果 */
+  box-shadow: 0 5px 15px rgba(0, 149, 255, 0.2);
+  z-index: 1;
+}
+
+.panel:hover :deep(.dv-border-box-10) {
+  filter: brightness(1.2);
+}
+
+.center-column {
+  padding: 0 !important;
 }
 
 .center-panel {
-  height: 100%;
+  height: 100% !important;
 }
 
-.time-analysis {
+:deep(.dv-border-box-10) {
+  width: 100%;
   height: 100%;
+  transition: filter 0.3s ease; /* 添加过渡效果 */
+  backdrop-filter: blur(5px); /* 添加模糊效果 */
+  -webkit-backdrop-filter: blur(5px); /* Safari 兼容 */
+}
+
+/* 调整模糊效果的强度 */
+:deep(.dv-border-box-10 .border-box-content) {
+  background: rgba(6, 30, 93, 0.2) !important; /* 半透明背景 */
 }
 
 .center-content {
@@ -97,15 +150,9 @@ import TimeSegmentAnalysis from '../components/analysis/TimeSegmentAnalysis.vue'
 }
 
 h3 {
-  margin-bottom: 20px;
-  text-align: center;
   color: #fff;
-}
-
-:deep(.dv-border-box-1) {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
 }
 
 :deep(.el-empty) {

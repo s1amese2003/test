@@ -13,7 +13,9 @@ const app = createApp(App)
 app.use(router)
 app.use(ElementPlus)
 app.use(BaiduMap, {
-  ak: 'Wp4eJvR3ozdOgHONYFG32MzK6yPyS93u'
+  ak: 'Wp4eJvR3ozdOgHONYFG32MzK6yPyS93u',
+  type: 'API',  // 改为标准API模式
+  v: '2.0'      // 使用2.0版本
 })
 app.use(datav)
 

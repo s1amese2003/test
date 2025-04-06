@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
   <div class="video-container">
     <video
       ref="videoPlayer"
@@ -12,6 +13,7 @@
       <span>{{ currentTime }}</span>
     </div>
   </div>
+</div>
 </template>
 
 <script setup>
@@ -36,11 +38,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  background: #00ff0d00;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
 .video-container {
   width: 100%;
   height: 100%;
-  background: #000;
-  border-radius: 8px;
+  padding: 0px;
+  background: #000000;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
 }

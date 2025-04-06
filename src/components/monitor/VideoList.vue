@@ -1,9 +1,6 @@
 <template>
   <div class="video-list">
-    <div class="list-header">
-      <h3>其他监控画面</h3>
-    </div>
-    <el-scrollbar height="calc(100% - 40px)">
+    <el-scrollbar height="calc(100%)">
       <div class="video-grid">
         <div v-for="camera in cameras" 
              :key="camera.id" 
@@ -11,10 +8,9 @@
              @click="selectVideo(camera)">
           <div class="thumbnail">
             <img :src="camera.thumbnail" :alt="camera.name">
-          </div>
-          <div class="camera-info">
-            <span>{{ camera.name }}</span>
-            <span>{{ camera.location }}</span>
+            <div class="camera-info">
+              <span>{{ camera.name }}{{ camera.location }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -32,14 +28,20 @@ const cameras = ref([
     id: 1,
     name: '摄像头-01',
     location: '机场北门',
-    thumbnail: '/images/camera1.jpg',
+    thumbnail: 'src/statics/092.jpg',
     url: 'video-url-1'
   },
   {
     id: 2,
     name: '摄像头-02',
     location: '停车场入口',
-    thumbnail: '/images/camera2.jpg',
+    thumbnail: 'src/statics/092.jpg',
+    url: 'video-url-2'
+  },{
+    id: 3,
+    name: '摄像头-03',
+    location: '停车场入口',
+    thumbnail: 'src/statics/092.jpg',
     url: 'video-url-2'
   },
   // 添加更多摄像头
@@ -53,7 +55,7 @@ const selectVideo = (camera) => {
 <style scoped>
 .video-list {
   height: 100%;
-  background: #2a2a2a;
+  background: #2a2a2a00;
   border-radius: 8px;
 }
 
@@ -64,14 +66,14 @@ const selectVideo = (camera) => {
 
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* 修改为固定3列 */
   gap: 15px;
   padding: 15px;
 }
 
 .video-item {
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 12px;
   overflow: hidden;
   transition: transform 0.2s;
 }
@@ -82,19 +84,30 @@ const selectVideo = (camera) => {
 
 .thumbnail {
   width: 100%;
-  height: 120px;
+  height: 172px;
   background: #000;
+  overflow: hidden; /* 防止图片溢出 */
+  position: relative; /* 为绝对定位的子元素提供参考 */
 }
 
 .thumbnail img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* 保持宽高比的同时填充整个容器 */
+  position: absolute; /* 绝对定位以确保完全覆盖 */
+  top: 0;
+  left: 0;
 }
 
 .camera-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.332); /* 添加半透明背景 */
   color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -12,6 +12,7 @@
         <el-progress 
           :percentage="road.congestion" 
           :color="getColorByStatus(road.congestion)"
+          :show-text="false"
         />
       </div>
     </el-scrollbar>
@@ -46,25 +47,61 @@ const getColorByStatus = (congestion) => {
 
 <style scoped>
 .traffic-status {
-  height: 50%;
-  background: #2a2a2a;
+  height: 100%;
+  background: #e7000000;
   border-radius: 8px;
   padding: 15px;
+  position: relative;
+}
+
+.traffic-status h3 {
+  font-size: 18px;
+  color: #fff;
+  margin: -5px 0 10px 0;
+  font-weight: bold;
+}
+
+/* 隐藏滚动条 */
+:deep(.el-scrollbar__bar.is-vertical) {
+  opacity: 0 !important;
+}
+
+:deep(.el-scrollbar__wrap) {
+  scrollbar-width: none; /* Firefox */
+}
+
+:deep(.el-scrollbar__wrap::-webkit-scrollbar) {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .road-item {
-  padding: 10px;
-  border-bottom: 1px solid #404040;
+  padding: 0 10px;
+  margin-bottom: 15px;
 }
 
 .road-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .road-name {
   color: #fff;
+}
+
+/* 修改进度条样式 */
+:deep(.el-progress-bar__outer) {
+  height: 8px !important;
+  border-radius: 4px;
+}
+
+:deep(.el-progress-bar__inner) {
+  border-radius: 4px;
+}
+
+:deep(.el-progress) {
+  width: 100%;
+  margin-top: 5px;
 }
 </style>
