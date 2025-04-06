@@ -2,36 +2,52 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VehicleStatus from '../views/VehicleStatus.vue'
 import VideoMonitor from '../views/VideoMonitor.vue'
 import DataAnalysis from '../views/DataAnalysis.vue'
-import VehicleStatistics from '../views/VehicleStatistics.vue'  // 直接导入组件
+import Login from '../views/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
-      redirect: '/vehicle'
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/vehicle',
       name: 'vehicle',
-      component: VehicleStatus
+      component: VehicleStatus,
+      meta: { requiresAuth: true }
     },
     {
       path: '/monitor',
       name: 'monitor',
-      component: VideoMonitor
+      component: VideoMonitor,
+      meta: { requiresAuth: true }
     },
     {
       path: '/analysis',
       name: 'analysis',
-      component: DataAnalysis
-    },
-    {
-      path: '/statistics',
-      name: 'statistics',
-      component: VehicleStatistics  // 改为直接使用组件而不是异步加载
+      component: DataAnalysis,
+      meta: { requiresAuth: true }
     }
   ]
+})
+
+// 导航守卫
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+  
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login')
+  } else if (to.path === '/login' && isLoggedIn) {
+    next('/vehicle')
+  } else {
+    next()
+  }
 })
 
 export default router

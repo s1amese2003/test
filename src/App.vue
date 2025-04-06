@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container v-if="showHeader">
     <el-header>
       <header class="header">
         <div class="header-title">
@@ -37,11 +37,12 @@
       <router-view></router-view>
     </el-main>
   </el-container>
+  <router-view v-else></router-view>
 </template>
 
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -73,6 +74,9 @@ const updateTime = () => {
 // 模拟天气数据
 const temperature = ref('25-30℃');
 const weatherCondition = ref('多云');
+
+// 判断是否显示头部
+const showHeader = computed(() => route.path !== '/login');
 
 // 组件挂载时启动定时器
 onMounted(() => {
