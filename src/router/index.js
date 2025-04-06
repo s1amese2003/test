@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VehicleStatus from '../views/VehicleStatus.vue'
 import VideoMonitor from '../views/VideoMonitor.vue'
 import DataAnalysis from '../views/DataAnalysis.vue'
-import Login from '../views/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -14,7 +13,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: () => import('../views/Login.vue')  // 使用懒加载
     },
     {
       path: '/vehicle',
@@ -37,7 +36,7 @@ const router = createRouter({
   ]
 })
 
-// 导航守卫
+// 修改路由守卫逻辑
 router.beforeEach((to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
   
