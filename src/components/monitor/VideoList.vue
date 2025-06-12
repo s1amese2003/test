@@ -7,9 +7,9 @@
              class="video-item"
              @click="selectVideo(camera)">
           <div class="thumbnail">
-            <img :src="camera.thumbnail" :alt="camera.name">
+            <div class="camera-img"><img :src="camera.thumbnail" :alt="camera.name"></div>
             <div class="camera-info">
-              <span>{{ camera.name }}{{ camera.location }}</span>
+              <span>{{ camera.name }} {{ camera.location }}</span>
             </div>
           </div>
         </div>
@@ -27,28 +27,33 @@ const cameras = ref([
   {
     id: 1,
     name: '摄像头-01',
-    location: '机场北门',
-    thumbnail: 'src/statics/092.jpg',
-    url: 'video-url-1'
+    location: '机场大道',
+    thumbnail: 'src\\statics\\cam1.png',
+    url: 'http://localhost:5000/video/0'
   },
   {
     id: 2,
     name: '摄像头-02',
     location: '停车场入口',
-    thumbnail: 'src/statics/092.jpg',
-    url: 'video-url-2'
+    thumbnail: 'src\\statics\\cam2.png',
+    url: 'http://localhost:5000/video/1'
   },{
     id: 3,
     name: '摄像头-03',
-    location: '停车场入口',
-    thumbnail: 'src/statics/092.jpg',
-    url: 'video-url-2'
+    location: '机场高速',
+    thumbnail: 'src\\statics\\cam3.png',
+    url: 'http://localhost:5000/video/2'
   },
   // 添加更多摄像头
 ])
 
 const selectVideo = (camera) => {
-  emit('select-video', camera.url)
+  // 修改这里，传递完整的摄像头信息
+  emit('select-video', {
+    url: camera.url,
+    name: camera.name,
+    location: camera.location
+  })
 }
 </script>
 
@@ -90,6 +95,29 @@ const selectVideo = (camera) => {
   position: relative; /* 为绝对定位的子元素提供参考 */
 }
 
+.camera-img {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.camera-img::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(43, 94, 234, 0.3); /* 蓝色叠加层 */
+  z-index: 1;
+  pointer-events: none; /* 确保点击事件可以穿透到下层 */
+  transition: opacity 0.3s ease;
+}
+
+.video-item:hover .camera-img::after {
+  opacity: 0; /* 鼠标悬停时隐藏蓝色叠加层 */
+}
+
 .thumbnail img {
   width: 100%;
   height: 100%;
@@ -97,6 +125,13 @@ const selectVideo = (camera) => {
   position: absolute; /* 绝对定位以确保完全覆盖 */
   top: 0;
   left: 0;
+  filter: blur(3px); /* 添加轻微模糊效果 */
+  transition: filter 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 鼠标悬停时取消模糊效果 */
+.video-item:hover .thumbnail img {
+  filter: blur(0); /* 鼠标悬停时清晰显示 */
 }
 
 .camera-info {
@@ -109,5 +144,6 @@ const selectVideo = (camera) => {
   color: #fff;
   display: flex;
   flex-direction: column;
+  z-index: 999;
 }
 </style>

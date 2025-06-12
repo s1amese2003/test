@@ -51,40 +51,40 @@ onMounted(() => {
     }],
     series: [
       {
-        name: '小型车',
+        name: '小型轿车',
         type: 'bar',
         emphasis: {
           focus: 'series'
         },
         itemStyle: { color: '#4992ff' },
-        data: [45, 82, 130, 140, 150, 80]
+        data: [45, 82, 130, 140]
       },
       {
-        name: '中型车',
+        name: '公交车',
         type: 'bar',
         emphasis: {
           focus: 'series'
         },
         itemStyle: { color: '#7cffb2' },
-        data: [28, 45, 75, 85, 95, 52]
+        data: [28, 45, 75, 85]
       },
       {
-        name: '大型车',
+        name: '面包车',
         type: 'bar',
         emphasis: {
           focus: 'series'
         },
         itemStyle: { color: '#fddd60' },
-        data: [15, 25, 45, 55, 65, 35]
+        data: [15, 25, 45, 55]
       },
       {
-        name: '特种车',
+        name: '危险车辆',
         type: 'bar',
         emphasis: {
           focus: 'series'
         },
         itemStyle: { color: '#ff6e76' },
-        data: [8, 12, 18, 22, 25, 15]
+        data: [8, 12, 18, 22]
       }
     ]
   }

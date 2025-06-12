@@ -2,51 +2,73 @@
   <div class="alert-container">
     <h3>实时违规警告</h3>
     <div class="alert-content" v-if="currentAlert">
-      <div class="alert-item">
-        <div class="alert-header">
-          <span class="alert-type">{{ currentAlert.type }}</span>
+      <transition name="alert-fade" mode="out-in">
+        <div class="alert-item" :key="currentAlert.time">
+          <div class="alert-header">
+            <span class="alert-type">{{ currentAlert.type }}</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">发生时间</span>
+              <span class="info-value">{{ currentAlert.time }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">违规地点</span>
+              <span class="info-value">{{ currentAlert.location }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">车辆类型</span>
+              <span class="info-value">{{ currentAlert.vehicleType }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">车牌号码</span>
+              <span class="info-value">{{ currentAlert.plateNumber }}</span>
+            </div>
+          </div>
         </div>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">发生时间</span>
-            <span class="info-value">{{ currentAlert.time }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">违规地点</span>
-            <span class="info-value">{{ currentAlert.location }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">车辆类型</span>
-            <span class="info-value">{{ currentAlert.vehicleType }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">车牌号码</span>
-            <span class="info-value">{{ currentAlert.plateNumber }}</span>
-          </div>
-        </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const currentAlert = ref({
-  type: '违停',
-  plateNumber: '湘A12345',
-  location: '机场北路口',
-  vehicleType: '小型轿车',
-  time: new Date().toLocaleTimeString()
+// 存储警告信息
+const alertList = ref([])
+
+// 当前显示的警告索引
+const currentIndex = ref(0)
+
+// 计算当前显示的警告信息
+const currentAlert = computed(() => {
+  return alertList.value.length > 0 ? alertList.value[currentIndex.value] : null
 })
 
-// 删除 getAlertClass 和 getAlertSeverity 函数
+let updateTimer = null
 
 // 模拟实时更新
 onMounted(() => {
-  setInterval(() => {
-    // 这里可以添加实时数据更新逻辑
-  }, 5000)
+  // 每5秒模拟接收新的警告信息
+  updateTimer = setInterval(() => {
+    const newAlert = {
+      type: [ '闯红灯', '逆行'][Math.floor(Math.random() * 4)],
+      plateNumber: `湘${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 90000) + 10000}`,
+      location: ['机场大道', '机场高速入口', '航站楼前', '停车场入口', '货运区'][Math.floor(Math.random() * 5)],
+      vehicleType: ['小型轿车', '大型货车', '公交车'][Math.floor(Math.random() * 4)],
+      time: new Date().toLocaleTimeString('zh-CN', {hour12: false})
+    }
+    
+    // 清空之前的警告信息，只保留最新的一条
+    alertList.value = [newAlert]
+  }, 10000)
+})
+
+// 组件卸载时清除定时器
+onUnmounted(() => {
+  if (updateTimer) {
+    clearInterval(updateTimer)
+  }
 })
 </script>
 
@@ -83,6 +105,12 @@ h3 {
   background: rgba(255, 255, 255, 0);
   transition: all 0.3s ease;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .alert-header {
@@ -138,4 +166,19 @@ h3 {
   font-weight: bold;
 }
 
+/* 添加过渡效果 */
+.alert-fade-enter-active,
+.alert-fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.alert-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.alert-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
 </style>

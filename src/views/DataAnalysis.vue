@@ -4,44 +4,42 @@
       <!-- 左侧区域 -->
       <el-col :span="7">
         <div class="panel">
-          <dv-border-box-10>
+          <dv-border-box-13>
             <VehicleRatio />
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
         <div class="panel">
-          <dv-border-box-10>
+          <dv-border-box-13>
             <VehicleTypeDistribution />
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
       </el-col>
 
       <!-- 中间区域 -->
       <el-col :span="10" class="center-column">
-        <div class="panel center-panel">
-          <dv-border-box-10>
-            <div class="center-content">
+        <div class="panel">
+          <dv-border-box-13>
               <VehicleTypePie />
-            </div>
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
         <div class="panel">
-          <dv-border-box-10>
+          <dv-border-box-13>
             <TimeSegmentAnalysis />
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
       </el-col>
 
       <!-- 右侧区域 -->
       <el-col :span="7">
         <div class="panel">
-          <dv-border-box-10>
+          <dv-border-box-13>
             <Approvals />
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
         <div class="panel">
-          <dv-border-box-10>
+          <dv-border-box-13>
             <InspectionStatus />
-          </dv-border-box-10>
+          </dv-border-box-13>
         </div>
       </el-col>
     </el-row>
@@ -55,6 +53,8 @@ import VehicleTypePie from '../components/analysis/VehicleTypePie.vue'
 import TimeSegmentAnalysis from '../components/analysis/TimeSegmentAnalysis.vue'
 import Approvals from '../components/analysis/Approvals.vue'
 import InspectionStatus from '../components/analysis/InspectionStatus.vue'
+// 引入共享状态，确保它被初始化
+import '../store/vehicleState'
 </script>
 
 <style scoped>
@@ -111,7 +111,7 @@ import InspectionStatus from '../components/analysis/InspectionStatus.vue'
   z-index: 1;
 }
 
-.panel:hover :deep(.dv-border-box-10) {
+.panel:hover :deep(.dv-border-box-13) {
   filter: brightness(1.2);
 }
 
@@ -123,7 +123,7 @@ import InspectionStatus from '../components/analysis/InspectionStatus.vue'
   height: 100% !important;
 }
 
-:deep(.dv-border-box-10) {
+:deep(.dv-border-box-13) {
   width: 100%;
   height: 100%;
   transition: filter 0.3s ease; /* 添加过渡效果 */
@@ -132,7 +132,7 @@ import InspectionStatus from '../components/analysis/InspectionStatus.vue'
 }
 
 /* 调整模糊效果的强度 */
-:deep(.dv-border-box-10 .border-box-content) {
+:deep(.dv-border-box-13 .border-box-content) {
   background: rgba(6, 30, 93, 0.2) !important; /* 半透明背景 */
 }
 

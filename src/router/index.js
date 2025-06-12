@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VehicleStatus from '../views/VehicleStatus.vue'
 import VideoMonitor from '../views/VideoMonitor.vue'
 import DataAnalysis from '../views/DataAnalysis.vue'
+import Login from '../views/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,7 +14,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue')  // 使用懒加载
+      component: Login
     },
     {
       path: '/vehicle',
@@ -36,14 +37,13 @@ const router = createRouter({
   ]
 })
 
-// 修改路由守卫逻辑
+// 全局前置守卫
 router.beforeEach((to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
   
-  if (to.meta.requiresAuth && !isLoggedIn) {
+  // 如果用户访问的不是登录页且未登录，则重定向到登录页
+  if (to.path !== '/login' && !isLoggedIn) {
     next('/login')
-  } else if (to.path === '/login' && isLoggedIn) {
-    next('/vehicle')
   } else {
     next()
   }

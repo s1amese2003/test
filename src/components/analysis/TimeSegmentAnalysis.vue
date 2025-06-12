@@ -28,7 +28,7 @@ onMounted(() => {
       }
     },
     legend: {
-      data: ['安保车辆', '机场巴士'],
+      data: ['安保车辆', '机场巴士', '航空牵引车'],  // 添加新的车辆类型
       textStyle: {
         color: '#fff'
       }
@@ -71,7 +71,7 @@ onMounted(() => {
         itemStyle: {
           color: '#4992ff'
         },
-        data: [4, 6, 8, 8, 8, 6]
+        data: [0, 6, 8, 8]
       },
       {
         name: '机场巴士',
@@ -88,7 +88,24 @@ onMounted(() => {
         itemStyle: {
           color: '#7cffb2'
         },
-        data: [6, 12, 15, 15, 15, 10]
+        data: [6, 8, 13, 15]
+      },
+      {
+        name: '航空牵引车',
+        type: 'line',
+        emphasis: {
+          focus: 'series'
+        },
+        showSymbol: true,
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: '#ff9649'  
+        },
+        itemStyle: {
+          color: '#ff9649'
+        },
+        data: [3, 7, 9, 12]  
       }
     ]
   }

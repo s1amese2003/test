@@ -5,7 +5,8 @@
       <el-col :span="16">
         <div class="panel">
           <dv-border-box-10>
-            <VideoPlayer :src="currentVideo" />
+            <!-- 修改这里，传递摄像头信息 -->
+            <VideoPlayer :src="currentVideo.url" :camera-info="currentVideo" />
           </dv-border-box-10>
         </div>
         <div class="panel">
@@ -14,7 +15,7 @@
           </dv-border-box-10>
         </div>
       </el-col>
-      
+  
       <!-- 右侧区域 -->
       <el-col :span="8">
         <div class="panel">
@@ -29,7 +30,7 @@
         </div>
         <div class="panel">
           <dv-border-box-10>
-            <HistorySearch />
+            <HistorySearch :currentVideo="currentVideo" @update-video="switchVideo" />
           </dv-border-box-10>
         </div>
       </el-col>
@@ -45,10 +46,16 @@ import TrafficStatus from '../components/monitor/TrafficStatus.vue'
 import RealTimeAlert from '../components/monitor/RealTimeAlert.vue'
 import HistorySearch from '../components/monitor/HistorySearch.vue'
 
-const currentVideo = ref('default-video-url')
+// 修改为对象，包含 url、name 和 location
+const currentVideo = ref({
+  url: 'http://localhost:5000/video/0',
+  name: '摄像头-01',
+  location: '机场北门'
+})
 
-const switchVideo = (videoUrl) => {
-  currentVideo.value = videoUrl
+// 修改 switchVideo 函数接收完整的摄像头信息
+const switchVideo = (cameraInfo) => {
+  currentVideo.value = cameraInfo
 }
 </script>
 
@@ -65,7 +72,7 @@ const switchVideo = (videoUrl) => {
 .monitor-content {
   height: 100%;
   display: flex;
-  flex-wrap: nowrap; 
+  flex-wrap: nowrap;
 }
 
 .el-col {

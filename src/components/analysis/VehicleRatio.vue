@@ -1,6 +1,6 @@
 <template>
   <div class="ratio-container">
-    <h3>今日车辆安全状态分布</h3>
+    <h3>车辆安全状态分布</h3>
     <div class="chart-container">
       <div id="vehicleRatioChart" style="width: 100%; height: 100%"></div>
     </div>
@@ -10,11 +10,12 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import * as echarts from 'echarts'
+import { dangerousRatio, updateDangerousRatio } from '../../store/vehicleState'
 
 let chart = null
 const chartData = ref([
-  { value: 85, name: '正常车辆' },
-  { value: 15, name: '危险车辆' }
+  { value: 92.98, name: '正常车辆' },
+  { value: dangerousRatio.value, name: '危险车辆' }
 ])
 
 onMounted(() => {
@@ -60,18 +61,29 @@ onMounted(() => {
 
   chart.setOption(option)
   
-  // 每隔30秒更新数据
+  // 每隔1.5秒更新数据
   const timer = setInterval(() => {
-    const total = Math.floor(Math.random() * 50) + 100
-    const dangerous = Math.floor(Math.random() * 20)
+    // 在原始数据基础上小幅波动
+    const normalRatio = 92.98 + (Math.random() * 2 - 1); // 在 91.98% ~ 93.98% 之间波动
+    const newDangerousRatio = 7.02 + (Math.random() * 2 - 1); // 在 6.02% ~ 8.02% 之间波动
+    
+    // 确保两个比例之和为 100%
+    const total = normalRatio + newDangerousRatio;
+    const adjustedNormal = (normalRatio / total) * 100;
+    const adjustedDangerous = (newDangerousRatio / total) * 100;
+    
+    // 更新共享状态
+    updateDangerousRatio(parseFloat(adjustedDangerous.toFixed(2)));
+    
     chartData.value = [
-      { value: total - dangerous, name: '正常车辆' },
-      { value: dangerous, name: '危险车辆' }
+      { value: adjustedNormal.toFixed(2), name: '正常车辆' },
+      { value: adjustedDangerous.toFixed(2), name: '危险车辆' }
     ]
+    
     chart.setOption({
       series: [{ data: chartData.value }]
     })
-  }, 30000)
+  }, 1500)
 
   return () => clearInterval(timer)
 })

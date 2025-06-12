@@ -1,39 +1,71 @@
 <template>
   <div class="container">
-  <div class="video-container">
-    <video
-      ref="videoPlayer"
-      class="video-player"
-      :src="props.src"
-      controls
-      autoplay
-    ></video>
-    <div class="video-info">
-      <span>{{ currentCamera }}</span>
-      <span>{{ currentTime }}</span>
+    <div class="video-container">
+      <img
+        ref="videoPlayer"
+        class="video-player"
+        :src="videoUrl"
+        alt="video feed"
+      />
+      <div class="video-info">
+        <!-- 修改这里，显示摄像头名称和位置 -->
+        <span>{{ cameraInfo.name }} {{ cameraInfo.location }}</span>
+        <span>{{ currentTime }}</span>
+      </div>
     </div>
   </div>
-</div>
-</template>
+</template>  
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
 const props = defineProps({
   src: {
     type: String,
     required: true
+  },
+  // 添加新的 prop 接收摄像头信息
+  cameraInfo: {
+    type: Object,
+    default: () => ({
+      name: '',
+      location: ''
+    })
   }
 })
 
-const currentCamera = ref('摄像头-01')
 const currentTime = ref('')
+const videoUrl = ref('')
 
+// 获取视频的完整URL的函数
+const fetchVideoUrl = () => {
+  console.log('Video src:', props.src); // 打印传入的 src
+
+  fetch(props.src)
+    .then(response => response.json())
+    .then(data => {
+      const baseUrl = 'http://localhost:5000'; // 你的视频基础URL
+      videoUrl.value = baseUrl + data.video_url; // 设置完整的视频URL
+    })
+    .catch(error => {
+      console.error('Error fetching video URL:', error);
+    });
+}
+
+// 在组件挂载时获取视频URL
 onMounted(() => {
+  fetchVideoUrl();
+
   // 更新时间
   setInterval(() => {
     currentTime.value = new Date().toLocaleString()
   }, 1000)
+})
+
+// 监听 src 属性的变化，当变化时重新获取视频URL
+watch(() => props.src, (newSrc) => {
+  console.log('Video src changed:', newSrc); // 打印新的 src
+  fetchVideoUrl(); // 当 src 改变时，重新获取视频URL
 })
 </script>
 

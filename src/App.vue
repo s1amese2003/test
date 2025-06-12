@@ -3,29 +3,19 @@
     <el-header>
       <header class="header">
         <div class="header-title">
-          <h1>机 场 车 辆 监 控 系 统</h1>
+          <h1>机场车辆监控系统</h1>
         </div>
         <div class="nav-buttons-center">
-          <div class="nav-button" 
-               :class="{ active: $route.path === '/monitor' }"
-               @click="$router.push('/monitor')">
+          <div class="nav-button" :class="{ active: $route.path === '/monitor' }" @click="$router.push('/monitor')">
             <span class="button-text">监控中心</span>
           </div>
-          <div class="nav-button" 
-               :class="{ active: $route.path === '/vehicle' }"
-               @click="$router.push('/vehicle')">
+          <div class="nav-button" :class="{ active: $route.path === '/vehicle' }" @click="$router.push('/vehicle')">
             <span class="button-text">车辆状况</span>
           </div>
-          <div class="nav-button" 
-               :class="{ active: $route.path === '/analysis' }"
-               @click="$router.push('/analysis')">
+          <div class="nav-button" :class="{ active: $route.path === '/analysis' }" @click="$router.push('/analysis')">
             <span class="button-text">数据分析</span>
           </div>
-          <!-- <div class="nav-button" 
-               :class="{ active: $route.path === '/statistics' }"
-               @click="$router.push('/statistics')">
-            <span class="button-text">车辆统计</span>
-          </div> -->
+
         </div>
         <div class="time-weather-info">
           <div class="time">{{ currentTime }}</div>
@@ -55,13 +45,13 @@ let timer = null;
 // 更新时间函数
 const updateTime = () => {
   const now = new Date();
-  
+
   // 格式化时间 HH:MM:SS
   const hours = now.getHours().toString().padStart(2, '0');
   const minutes = now.getMinutes().toString().padStart(2, '0');
   const seconds = now.getSeconds().toString().padStart(2, '0');
   currentTime.value = `${hours}:${minutes}:${seconds}`;
-  
+
   // 格式化日期 YYYY年MM月DD日 星期X
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -75,8 +65,11 @@ const updateTime = () => {
 const temperature = ref('25-30℃');
 const weatherCondition = ref('多云');
 
-// 判断是否显示头部
-const showHeader = computed(() => route.path !== '/login');
+// 判断是否显示头部，同时检查登录状态
+const showHeader = computed(() => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  return route.path !== '/login' && isLoggedIn;
+});
 
 // 组件挂载时启动定时器
 onMounted(() => {
@@ -125,22 +118,34 @@ onBeforeUnmount(() => {
 
 .header-title {
   color: white;
-  margin-right: 160px; /* 减小右边距，使导航按钮整体向左移动 */
+  margin-right: 160px;
+  /* 减小右边距，使导航按钮整体向左移动 */
 }
 
 .header-title h1 {
-  font-size: 20px;
+  font-size: 30px;
   margin: 0;
-  font-weight: bold;
+  /* font-weight: bold; */
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  font-family: 'wendaojisuhei', sans-serif;
+}
+
+@font-face {
+  font-family: 'wendaojisuhei';
+  src: url('/fonts/wendaojisuhei.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .nav-buttons-center {
   display: flex;
   gap: 20px;
-  margin: 0; /* 移除自动边距 */
-  margin-right: auto; /* 添加右侧自动边距，使按钮组靠左 */
-  justify-content: flex-start; /* 改为左对齐 */
+  margin: 0;
+  /* 移除自动边距 */
+  margin-right: auto;
+  /* 添加右侧自动边距，使按钮组靠左 */
+  justify-content: flex-start;
+  /* 改为左对齐 */
 }
 
 .nav-button {
@@ -198,5 +203,3 @@ onBeforeUnmount(() => {
   margin-top: 2px;
 }
 </style>
-
-

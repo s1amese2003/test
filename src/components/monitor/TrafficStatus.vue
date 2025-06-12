@@ -23,7 +23,7 @@
 import { ref } from 'vue'
 
 const roadStatus = ref([
-  { name: '机场北路', status: '通畅', congestion: 20 },
+  { name: '机场大道', status: '通畅', congestion: 20 },
   { name: '停车场入口', status: '较拥堵', congestion: 65 },
   { name: '航站楼前', status: '拥堵', congestion: 85 },
   { name: '机场高速', status: '通畅', congestion: 30 }
